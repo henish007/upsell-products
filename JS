@@ -1,0 +1,124 @@
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('.upsell-cart-item .add-upsell-to-cart').forEach(function(button) {
+      button.addEventListener('click', function(event) {
+        event.preventDefault();
+        var productId = button.getAttribute('data-product-id');
+
+        fetch('/cart/add.js', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-Requested-With': 'XMLHttpRequest'
+          },
+          body: JSON.stringify({
+            id: productId,
+            quantity: 1
+          })
+        })
+        .then(response => response.json())
+        .then(data => {
+          // Update cart drawer with new item
+          fetch('/cart?view=drawer')
+            .then(response => response.text())
+            .then(cartHtml => {
+              document.querySelector('.cart-drawer').innerHTML = cartHtml;
+            });
+        });
+      });
+    });
+  });
+</script>
+-------------------------------
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  attachAddToCartListeners();
+});
+  
+function attachAddToCartListeners(){
+  document.querySelectorAll('.upsell-cart-item .add-upsell-to-cart').forEach(function(button) {
+    button.addEventListener('click', function(event) {
+      console.log("click");
+      event.preventDefault();
+      var productId = button.getAttribute('data-product-id');
+
+      fetch('/cart/add.js', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-Requested-With': 'XMLHttpRequest'
+        },
+        body: JSON.stringify({
+          id: productId,
+          quantity: 1
+        })
+      })
+      .then(response => response.json())
+      .then(data => {
+        // Update cart drawer with new item
+        fetch(${routes.cart_url}?section_id=cart-drawer)
+          .then(response => response.text())
+          .then(cartHtml => {
+            const html = new DOMParser().parseFromString(cartHtml, 'text/html');
+            const selectors = ['cart-drawer-items', '.cart-drawer__footer'];
+            for (const selector of selectors) {
+              const targetElement = document.querySelector(selector);
+              const sourceElement = html.querySelector(selector);
+              if (targetElement && sourceElement) {
+                targetElement.replaceWith(sourceElement);
+              }
+            }
+          });
+      });
+    });
+  });
+}
+</script>
+
+-------------------------------------------
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+attachAddToCartListeners();
+  });
+    function updateCartDrawer() {
+    fetch(${routes.cart_url}?section_id=cart-drawer)
+      .then(response => response.text())
+      .then((responseText) => {
+          const html = new DOMParser().parseFromString(responseText, 'text/html');
+          const selectors = ['cart-drawer-items', '.cart-drawer__footer'];
+          for (const selector of selectors) {
+            const targetElement = document.querySelector(selector);
+            const sourceElement = html.querySelector(selector);
+            if (targetElement && sourceElement) {
+              targetElement.replaceWith(sourceElement);
+            }
+          }
+        attachAddToCartListeners();
+        });
+  }
+  function attachAddToCartListeners() {
+    document.querySelectorAll('.upsell-cart-item .add-upsell-to-cart').forEach(function(button) {
+       console.log("click");
+      button.addEventListener('click', function(event) {
+        event.preventDefault();
+        var productId = button.getAttribute('data-product-id');
+
+        fetch('/cart/add.js', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-Requested-With': 'XMLHttpRequest'
+          },
+          body: JSON.stringify({ id: productId, quantity: 1 })
+        })
+        .then(response => response.json())
+        .then(data => {
+          console.log("update");
+          updateCartDrawer();
+        });
+      });
+    });
+  }
+</script>
