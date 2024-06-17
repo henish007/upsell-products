@@ -1,0 +1,24 @@
+<div class="upsell_products">
+    {% assign last_item = cart.items.first %}
+    {% assign metafields = last_item.product.metafields.custom.upsell_product_id.value %}
+    {% if metafields != blank %}
+      <h3>Add These Extras</h3>
+      <div class="upsell_products-block">
+        {% for metafield in metafields %}
+          <div class="upsell-cart-item">
+            <a href="{{ metafield.url }}">
+              <img src="{{ metafield.featured_image | img_url: 'small' }}" alt="{{ metafield.title }}" width="100" height="100">
+              <span class="title">{{ metafield.title }}</span>
+              <span class="money">{{ metafield.price | money }}</span>
+            </a>
+            <button type="button"
+              class="add-upsell-to-cart"
+              data-product-id="{{ metafield.selected_or_first_available_variant.id }}"
+            >
+              Add
+            </button>
+          </div>
+        {% endfor %}
+      </div>
+    {% endif %}
+</div>
